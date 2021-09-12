@@ -38,6 +38,8 @@
 #include "audio/pcm/audio_pcm.h"
 #include "audio/manager/audio_manager.h"
 
+#include "console/log.h"
+
 #define PLAYER_THREAD_STACK_SIZE    (1024 * 4)
 
 static OS_Thread_t play_thread;
@@ -273,20 +275,24 @@ static void play_task(void *arg)
     printf("you can use it to play, pause, resume, set volume and so on.\n");
 
     printf("player set volume to 8. valid volume value is from 0~31\n");
-    player->setvol(player, 8);
+    player->setvol(player, 24);
 
     while (1) {
-        printf("===try to play media in sd/tf card===\n");
+        LOG(EDEBUG, "===try to play pcm by audio driver===");
+        // printf("===try to play pcm by audio driver===\n");
+        play_pcm_music();
+        
+        LOG(EDEBUG, "===try to play media in sd/tf card===");
+        // printf("===try to play media in sd/tf card===\n");
         play_file_music();
 
-        printf("===try to play media in flash===\n");
+        LOG(EDEBUG, "===try to play media in flash===");
+        // printf("===try to play media in flash===\n");
         play_flash_music();
 
-        printf("===try to play media by fifo===\n");
+        LOG(EDEBUG, "===try to play media by fifo===");
+        // printf("===try to play media by fifo===\n");
         play_fifo_music();
-
-        printf("===try to play pcm by audio driver===\n");
-        play_pcm_music();
     }
 
     player_destroy(player);
