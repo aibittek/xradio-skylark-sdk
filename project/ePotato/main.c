@@ -31,9 +31,15 @@
 #include <stdio.h>
 #include "kernel/os/os.h"
 
+#include "wlan_test.h"
+
+
 int main(void)
 {
 	platform_init();
+
+	// wifi test
+    wlan_test();
 
 	while (1) {
 		OS_Sleep(10);

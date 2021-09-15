@@ -11,6 +11,9 @@ export __CONFIG_XIP := y
 # enable/disalbe PSRAM for XR872AT
 # export __CONFIG_PSRAM := y
 
+# enable/disalbe STA mode
+export __CONFIG_WLAN_STA := y
+
 # enable/disalbe WPS mode
 # export __CONFIG_WLAN_STA_WPS := y
 
@@ -21,10 +24,10 @@ export __CONFIG_XIP := y
 # export __CONFIG_WLAN_MONITOR := y
 
 # enable/disalbe OTA, default to n
-export __CONFIG_OTA := y
+# export __CONFIG_OTA := y
 
 # enable/disalbe play/ctrl
-export __CONFIG_XPLAYER := y
+# export __CONFIG_XPLAYER := y
 
 # enable/disalbe secure boot
 # export __CONFIG_SECURE_BOOT := y
