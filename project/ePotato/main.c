@@ -31,15 +31,15 @@
 #include <stdio.h>
 #include "kernel/os/os.h"
 
-#include "wlan_test.h"
+#include "test/test.h"
 
 
 int main(void)
 {
 	platform_init();
 
-	// wifi test
-    wlan_test();
+	// all test
+    all_test();
 
 	while (1) {
 		OS_Sleep(10);

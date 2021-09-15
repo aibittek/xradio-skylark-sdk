@@ -44,6 +44,7 @@ DIRS_IGNORE += $(PRJ_BOARD)
 DIRS_ALL := $(shell find $(PRJ_ROOT_PATH) $(ROOT_PATH)/project/common -type d)
 DIRS := $(filter-out $(DIRS_IGNORE),$(DIRS_ALL))
 DIRS += $(PRJ_BOARD)
+DIRS += $(PRJ_BOARD)/test
 
 SRCS := $(basename $(foreach dir,$(DIRS),$(wildcard $(dir)/*.[csS])))
 

@@ -82,6 +82,5 @@ void wlan_test(void)
                         OS_THREAD_PRIO_APP,
                         PLAYER_THREAD_STACK_SIZE) != OS_OK) {
         printf("thread create fail.exit\n");
-        return -1;
     }
 }
