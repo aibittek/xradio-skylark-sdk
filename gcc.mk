@@ -5,7 +5,7 @@
 # ----------------------------------------------------------------------------
 # cross compiler
 # ----------------------------------------------------------------------------
-CC_DIR := /cygdrive/d/Soft/cygwin64/tools/bin/
+CC_DIR := /cygdrive/d/Soft/cygwin64/tools/bin
 CC_PREFIX := $(CC_DIR)/arm-none-eabi-
 
 AS      := $(CC_PREFIX)as
@@ -81,6 +81,9 @@ endif
 CC_FLAGS = $(CPU) -c $(DBG_FLAG) -fno-common -fmessage-length=0 \
 	-fno-exceptions -ffunction-sections -fdata-sections -fomit-frame-pointer \
 	-Wall -Werror -Wpointer-arith -Wno-error=unused-function \
+  -Wno-error=unused-label -Wno-error=unused-variable -Wno-error=pointer-sign \
+  -Wno-error=implicit-function-declaration -Wno-error=unused-but-set-variable \
+  -Wno-error=missing-braces \
 	-MMD -MP $(OPTIMIZE_FLAG)
 
 LD_FLAGS = $(CPU) -Wl,--gc-sections --specs=nano.specs \
@@ -181,6 +184,7 @@ endif
 INCLUDE_PATHS += -I$(INCLUDE_ROOT_PATH)/net
 INCLUDE_PATHS += -I$(INCLUDE_ROOT_PATH)/net/$(LWIP_DIR)
 INCLUDE_PATHS += -I$(INCLUDE_ROOT_PATH)/net/$(MBEDTLS_DIR)
+INCLUDE_PATHS += -I$(INCLUDE_ROOT_PATH)/net/$(MBEDTLS_DIR)/mbedtls
 ifeq ($(__CONFIG_LWIP_V1), y)
   INCLUDE_PATHS += -I$(INCLUDE_ROOT_PATH)/net/$(LWIP_DIR)/ipv4
 endif

@@ -34,17 +34,24 @@ endif
 # ----------------------------------------------------------------------------
 # objects
 # ----------------------------------------------------------------------------
+INCLUDE_EASYAIOT_ALL := $(shell find $(PRJ_ROOT_PATH)/easyAIoT -type d)
+INCLUDE_EASYAIOT_IGNORE := $(PRJ_ROOT_PATH)/easyAIoT/Audio/WIN
+INCLUDE_EASYAIOT_IGNORE += $(PRJ_ROOT_PATH)/easyAIoT/Audio/Linux%
+DIR_INCLUDE_EASYAIOT := $(filter-out $(INCLUDE_EASYAIOT_IGNORE),$(INCLUDE_EASYAIOT_ALL))
+
 INCLUDE_PATHS += -I$(PRJ_ROOT_PATH)
+INCLUDE_PATHS += $(addprefix -I, $(DIR_INCLUDE_EASYAIOT))
 
 DIRS_IGNORE := $(PRJ_ROOT_PATH)/gcc%
 DIRS_IGNORE += $(PRJ_ROOT_PATH)/image%
 DIRS_IGNORE += $(ROOT_PATH)/project/common/board/%
 DIRS_IGNORE += $(PRJ_BOARD)
+DIRS_IGNORE += $(PRJ_ROOT_PATH)/easyAIoT/Audio/WIN
+DIRS_IGNORE += $(PRJ_ROOT_PATH)/easyAIoT/Audio/Linux%
 
 DIRS_ALL := $(shell find $(PRJ_ROOT_PATH) $(ROOT_PATH)/project/common -type d)
 DIRS := $(filter-out $(DIRS_IGNORE),$(DIRS_ALL))
 DIRS += $(PRJ_BOARD)
-DIRS += $(PRJ_BOARD)/test
 
 SRCS := $(basename $(foreach dir,$(DIRS),$(wildcard $(dir)/*.[csS])))
 
@@ -57,7 +64,7 @@ OBJS := $(addsuffix .o,$(SRCS))
 # PRJ_EXTRA_LIBS :=
 
 # extra header files searching path
-# PRJ_EXTRA_INC_PATH :=
+# PRJ_EXTRA_INC_PATH := 
 
 # extra symbols (macros)
 # PRJ_EXTRA_SYMBOLS :=

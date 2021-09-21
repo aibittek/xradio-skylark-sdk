@@ -40,9 +40,9 @@
 #endif
 
 //Debug config
-#define AC107_DBG_EN				0
+#define AC107_DBG_EN				1
 #define AC107_ERR_EN				1
-
+// 
 #define AC107_DBG(fmt, arg...)		HAL_LOG(AC107_DBG_EN, "[AC107_CODEC] "fmt, ##arg)
 #define AC107_ERR(fmt, arg...)		HAL_LOG(AC107_ERR_EN, "[AC107_CODEC] "fmt, ##arg)
 #define AC107_ALWAYS(fmt, arg...)	HAL_LOG(1, "[AC107_CODEC] "fmt, ##arg)
