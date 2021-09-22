@@ -320,22 +320,54 @@ void vAudioClose()
 }
 
 #elif defined(__CONFIG_CHIP_XR872) && defined(__CONFIG_OS_FREERTOS)
+#include "common/framework/fs_ctrl.h"
+#include "fs/fatfs/ff.h"
+#include "common/apps/recorder_app.h"
+#include "kernel/os/os_time.h"
+#include "audio/pcm/audio_pcm.h"
+#include "audio/manager/audio_manager.h"
 bool bAudioOpen(AudioConfig_t *pAudioConfig)
 {
+    recorder_base *recorder;
     
+    Recorder.pvAudioHandle = recorder_create();
+    if (NULL == Recorder.pvAudioHandle) {
+        LOG(EERROR, "recorder create fail, exit");
+        return false;
+    }
+
+    memcpy(&Recorder.stAudioConfig, pAudioConfig, sizeof(AudioConfig_t));
+    
+    return true;
 }
 
 bool bAudioStart()
 {
+    rec_cfg cfg;
+    recorder_base *recorder = (recorder_base *)Recorder.pvAudioHandle;
     
+    /* record a 15s pcm media */
+    cfg.type = XRECODER_AUDIO_ENCODE_PCM_TYPE;
+    cfg.sample_rate = Recorder.stAudioConfig.iSampleRate;
+    cfg.chan_num = Recorder.stAudioConfig.byChannels;
+    cfg.bitrate = Recorder.stAudioConfig.iSampleRate;;
+    cfg.sampler_bits = Recorder.stAudioConfig.byBitsPerSample;
+    recorder->start(recorder, "file://record/1.pcm", &cfg);
+
+    return true;
 }
+
 void vAudioStop()
 {
-    
+    recorder_base *recorder = (recorder_base *)Recorder.pvAudioHandle;
+    recorder->stop(recorder);
 }
+
 void vAudioClose()
 {
-    
+    recorder_base *recorder = (recorder_base *)Recorder.pvAudioHandle;
+    recorder_destroy(recorder);
+    Recorder.pvAudioHandle = NULL;
 }
 
 #else

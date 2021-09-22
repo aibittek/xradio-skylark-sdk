@@ -39,7 +39,7 @@ int main(void)
 	platform_init();
 
 	// all test
-    all_test();
+    allTest();
 
 	while (1) {
 		OS_Sleep(10);

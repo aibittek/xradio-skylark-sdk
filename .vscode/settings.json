@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "wlan_defs.h": "c",
+        "os.h": "c",
+        "eilog.h": "c",
+        "eihttpclient.h": "c",
+        "recorder_app.h": "c",
+        "audio_pcm.h": "c",
+        "audiorecorder.h": "c",
+        "record_test.h": "c"
+    }
+}

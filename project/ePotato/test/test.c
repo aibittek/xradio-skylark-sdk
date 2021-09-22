@@ -1,8 +1,21 @@
-#include "test.h"
 #include "wlan_test.h"
+#include "record_test.h"
+#include "play_test.h"
+#include "http_test.h"
 
-void all_test()
+#include "test.h"
+
+void allTest()
 {
     // wlan test
-    wlan_test();
+    wlanTest();
+
+    // record test
+    recordTest();
+
+    // play test
+    playTest();
+
+    // http test
+    httpTest();
 }

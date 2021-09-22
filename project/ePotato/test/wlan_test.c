@@ -1,24 +1,25 @@
-#include "wlan_test.h"
 #include "kernel/os/os.h"
 #include "lwip/sockets.h"
 #include "wlan/wlan.h"
 #include "wlan/wlan_defs.h"
 #include "console/log.h"
 
+#include "wlan_test.h"
+
 #define PLAYER_THREAD_STACK_SIZE    (1024 * 2)
 
-static OS_Thread_t wlan_thread;
+static OS_Thread_t wlanThread;
 
-static void wlan_test_thread(void *arg)
+static void wlanTestThread(void *arg)
 {
     while (1) {
-        wlan_speed_test();
+        wlanSpeedTest();
     }
 
-    OS_ThreadDelete(&wlan_thread);
+    OS_ThreadDelete(&wlanThread);
 }
 
-void wlan_speed_test(void)
+void wlanSpeedTest(void)
 {
     int sockfd;
     char buf[1024];
@@ -73,11 +74,11 @@ error:
     close(sockfd);
 }
 
-void wlan_test(void)
+void wlanTest(void)
 {
-    if (OS_ThreadCreate(&wlan_thread,
-                        "wlan_test_thread",
-                        wlan_test_thread,
+    if (OS_ThreadCreate(&wlanThread,
+                        "wlanTestThread",
+                        wlanTestThread,
                         NULL,
                         OS_THREAD_PRIO_APP,
                         PLAYER_THREAD_STACK_SIZE) != OS_OK) {

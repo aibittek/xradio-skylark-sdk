@@ -51,7 +51,7 @@ void pcmPlay(const char *pathname)
     CloseHandle(wait);
     cstring_del(pFile);
 }
-#elif defined(LINUX)
+#elif defined(LINUX) || defined(__unix__)
 void pcmPlay(const char *pathname)
 {
     const char *format = "aplay -r16000 -c1 -f S16_LE %s";
@@ -61,6 +61,121 @@ void pcmPlay(const char *pathname)
     sprintf(cmd, format, pathname);
     system(cmd);
     if (cmd) free(cmd);
+}
+#elif defined(__CONFIG_CHIP_XR872) && defined(__CONFIG_OS_FREERTOS)
+#include <EILog.h>
+#include "kernel/os/os.h"
+#include "common/framework/fs_ctrl.h"
+#include "common/apps/player_app.h"
+#include "fs/fatfs/ff.h"
+#include "audio/pcm/audio_pcm.h"
+#include "audio/manager/audio_manager.h"
+
+#define PLAYER_THREAD_STACK_SIZE    (1024 * 4)
+static OS_Thread_t play_thread;
+static player_base *player;
+static int isCompleted = 0;
+static int play_pcm_music(const char *pathname)
+{
+    FIL fp;
+    int ret;
+    FRESULT result;
+    unsigned int act_read;
+    unsigned int pcm_buf_size;
+    void *pcm_buf;
+    struct pcm_config config;
+
+    result = f_open(&fp, pathname, FA_OPEN_EXISTING | FA_READ);
+    if (result != FR_OK) {
+        printf("open pcm file fail\n");
+        return -1;
+    }
+
+    config.channels = 1;
+    config.format = PCM_FORMAT_S16_LE;
+    config.period_count = 2;
+    config.period_size = 1024;
+    config.rate = 16000;
+    ret = snd_pcm_open(AUDIO_SND_CARD_DEFAULT, PCM_OUT, &config);
+    if (ret != 0) {
+        goto err1;
+    }
+
+    pcm_buf_size = config.channels * config.period_count * config.period_size;
+    pcm_buf = malloc(pcm_buf_size);
+    if (pcm_buf == NULL) {
+        goto err2;
+    }
+
+    while (1) {
+        result = f_read(&fp, pcm_buf, pcm_buf_size, &act_read);
+        if (result != FR_OK) {
+            printf("read fail.\n");
+            break;
+        }
+
+        snd_pcm_write(AUDIO_SND_CARD_DEFAULT, pcm_buf, act_read);
+
+        if (act_read != pcm_buf_size) {
+            printf("reach file end\n");
+            break;
+        }
+    }
+
+    free(pcm_buf);
+    snd_pcm_flush(AUDIO_SND_CARD_DEFAULT);
+    snd_pcm_close(AUDIO_SND_CARD_DEFAULT, PCM_OUT);
+    f_close(&fp);
+
+    return 0;
+
+err2:
+    snd_pcm_close(AUDIO_SND_CARD_DEFAULT, PCM_OUT);
+err1:
+    f_close(&fp);
+    return -1;
+}
+static void play_task(void *arg)
+{
+    const char *pathname = (const char *)arg;
+
+    if (fs_ctrl_mount(FS_MNT_DEV_TYPE_SDCARD, 0) != 0) {
+        printf("mount fail\n");
+        goto exit;
+    }
+
+    player = player_create();
+    if (player == NULL) {
+        printf("player create fail.\n");
+        goto exit;
+    }
+
+    printf("player create success.\n");
+    printf("you can use it to play, pause, resume, set volume and so on.\n");
+
+    printf("player set volume to 8. valid volume value is from 0~31\n");
+    player->setvol(player, 24);
+
+    while (1) {
+        LOG(EDEBUG, "===try to play pcm by audio driver===");
+        play_pcm_music(pathname);
+    }
+
+    player_destroy(player);
+
+exit:
+    OS_ThreadDelete(&play_thread);
+}
+void pcmPlay(const char *pathname)
+{
+    if (OS_ThreadCreate(&play_thread,
+                        "play_task",
+                        play_task,
+                        (void *)pathname,
+                        OS_THREAD_PRIO_APP,
+                        PLAYER_THREAD_STACK_SIZE) != OS_OK) {
+        LOG(EERROR, "thread create fail.exit");
+    }
 }
 #else
 #error "pcm play not support on this platform."

@@ -74,7 +74,7 @@ extern "C" {
 #define PRJCONF_SYSINFO_FLASH           0
 
 /* sysinfo start address */
-#define PRJCONF_SYSINFO_ADDR            ((1024 - 4) * 1024)
+#define PRJCONF_SYSINFO_ADDR            ((2048 - 4) * 1024)
 
 /* sysinfo size */
 #define PRJCONF_SYSINFO_SIZE            (4 * 1024)
@@ -107,16 +107,16 @@ extern "C" {
 #define PRJCONF_CE_EN                   1
 
 /* spi enable/disable */
-#define PRJCONF_SPI_EN                  0
+#define PRJCONF_SPI_EN                  1
 
 /* mmc enable/disable */
-#define PRJCONF_MMC_EN                  0
+#define PRJCONF_MMC_EN                  1
 
 /* mmc detect mode */
 #define PRJCONF_MMC_DETECT_MODE         CARD_ALWAYS_PRESENT
 
 /* Xradio internal codec sound card enable/disable */
-#define PRJCONF_INTERNAL_SOUNDCARD_EN	0
+#define PRJCONF_INTERNAL_SOUNDCARD_EN	1
 
 /* AC107 sound card enable/disable */
 #define PRJCONF_AC107_SOUNDCARD_EN		0

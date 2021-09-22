@@ -54,6 +54,7 @@ DIRS := $(filter-out $(DIRS_IGNORE),$(DIRS_ALL))
 DIRS += $(PRJ_BOARD)
 
 SRCS := $(basename $(foreach dir,$(DIRS),$(wildcard $(dir)/*.[csS])))
+SRCS += $(basename $(foreach dir,$(DIRS),$(wildcard $(dir)/*.cpp)))
 
 OBJS := $(addsuffix .o,$(SRCS))
 
@@ -80,7 +81,7 @@ LINKER_SCRIPT := ./appos.ld
 # image config file
 #   - relative to "../image/$(__CONFIG_CHIP_TYPE)/", eg. "../image/xr872/"
 #   - define your own "IMAGE_CFG" to override the default one
-IMAGE_CFG := ./image.cfg
+IMAGE_CFG := ./image_auto_cal.cfg
 
 # image name, default to xr_system
 # IMAGE_NAME :=
